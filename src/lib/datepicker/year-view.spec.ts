@@ -12,6 +12,18 @@ const JAN = 0, FEB = 1, MAR = 2, APR = 3, MAY = 4, JUN = 5, JUL = 6, AUG = 7, SE
       NOV = 10, DEC = 11;
 
 
+/**
+ * Strips direction (LTR, RTL) characters from a string or array of strings. Needed since some
+ * browsers include these characters while others don't.
+ */
+function stripDirChars(value: string | string[]) {
+  if (Array.isArray(value)) {
+    return value.map((item) => stripDirChars(item));
+  }
+  return value.replace(/[\u200e\u200f]/g, '');
+}
+
+
 describe('MdYearView', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -47,7 +59,7 @@ describe('MdYearView', () => {
 
     it('has correct year label', () => {
       let labelEl = yearViewNativeElement.querySelector('.mat-calendar-body-label');
-      expect(labelEl.innerHTML.trim()).toBe('2017');
+      expect(stripDirChars(labelEl.innerHTML.trim())).toBe('2017');
     });
 
     it('has 12 months', () => {
@@ -57,7 +69,7 @@ describe('MdYearView', () => {
 
     it('shows selected month if in same year', () => {
       let selectedEl = yearViewNativeElement.querySelector('.mat-calendar-body-selected');
-      expect(selectedEl.innerHTML.trim()).toBe('MAR');
+      expect(stripDirChars(selectedEl.innerHTML.trim())).toBe('MAR');
     });
 
     it('does not show selected month if in different year', () => {
@@ -74,12 +86,12 @@ describe('MdYearView', () => {
       fixture.detectChanges();
 
       let selectedEl = yearViewNativeElement.querySelector('.mat-calendar-body-selected');
-      expect(selectedEl.innerHTML.trim()).toBe('DEC');
+      expect(stripDirChars(selectedEl.innerHTML.trim())).toBe('DEC');
     });
 
     it('should mark active date', () => {
       let cellEls = yearViewNativeElement.querySelectorAll('.mat-calendar-body-cell');
-      expect((cellEls[0] as HTMLElement).innerText.trim()).toBe('JAN');
+      expect(stripDirChars((cellEls[0] as HTMLElement).innerText.trim())).toBe('JAN');
       expect(cellEls[0].classList).toContain('mat-calendar-body-active');
     });
   });

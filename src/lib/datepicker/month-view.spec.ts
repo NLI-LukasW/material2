@@ -12,6 +12,18 @@ const JAN = 0, FEB = 1, MAR = 2, APR = 3, MAY = 4, JUN = 5, JUL = 6, AUG = 7, SE
       NOV = 10, DEC = 11;
 
 
+/**
+ * Strips direction (LTR, RTL) characters from a string or array of strings. Needed since some
+ * browsers include these characters while others don't.
+ */
+function stripDirChars(value: string | string[]) {
+  if (Array.isArray(value)) {
+    return value.map((item) => stripDirChars(item));
+  }
+  return value.replace(/[\u200e\u200f]/g, '');
+}
+
+
 describe('MdMonthView', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -47,7 +59,7 @@ describe('MdMonthView', () => {
 
     it('has correct month label', () => {
       let labelEl = monthViewNativeElement.querySelector('.mat-calendar-body-label');
-      expect(labelEl.innerHTML.trim()).toBe('JAN');
+      expect(stripDirChars(labelEl.innerHTML.trim())).toBe('JAN');
     });
 
     it('has 31 days', () => {
@@ -57,7 +69,7 @@ describe('MdMonthView', () => {
 
     it('shows selected date if in same month', () => {
       let selectedEl = monthViewNativeElement.querySelector('.mat-calendar-body-selected');
-      expect(selectedEl.innerHTML.trim()).toBe('10');
+      expect(stripDirChars(selectedEl.innerHTML.trim())).toBe('10');
     });
 
     it('does not show selected date if in different month', () => {
@@ -74,12 +86,12 @@ describe('MdMonthView', () => {
       fixture.detectChanges();
 
       let selectedEl = monthViewNativeElement.querySelector('.mat-calendar-body-selected');
-      expect(selectedEl.innerHTML.trim()).toBe('31');
+      expect(stripDirChars(selectedEl.innerHTML.trim())).toBe('31');
     });
 
     it('should mark active date', () => {
       let cellEls = monthViewNativeElement.querySelectorAll('.mat-calendar-body-cell');
-      expect((cellEls[4] as HTMLElement).innerText.trim()).toBe('5');
+      expect(stripDirChars((cellEls[4] as HTMLElement).innerText.trim())).toBe('5');
       expect(cellEls[4].classList).toContain('mat-calendar-body-active');
     });
   });
