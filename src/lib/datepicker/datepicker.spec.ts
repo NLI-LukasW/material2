@@ -123,16 +123,22 @@ describe('MdDatepicker', () => {
         testComponent.datepicker.open();
         fixture.detectChanges();
 
-        expect(document.querySelector('md-dialog-container')).not.toBeNull();
-        expect(testComponent.datepickerInput.value).toEqual(new Date(2020, JAN, 1));
-
-        let cells = document.querySelectorAll('.mat-calendar-body-cell');
-        dispatchMouseEvent(cells[1], 'click');
-        fixture.detectChanges();
-
         fixture.whenStable().then(() => {
-          expect(document.querySelector('md-dialog-container')).toBeNull();
-          expect(testComponent.datepickerInput.value).toEqual(new Date(2020, JAN, 2));
+          fixture.detectChanges();
+
+          expect(document.querySelector('md-dialog-container')).not.toBeNull();
+          expect(testComponent.datepickerInput.value).toEqual(new Date(2020, JAN, 1));
+
+          let cells = document.querySelectorAll('.mat-calendar-body-cell');
+          dispatchMouseEvent(cells[1], 'click');
+          fixture.detectChanges();
+
+          fixture.whenStable().then(() => {
+            fixture.detectChanges();
+
+            expect(document.querySelector('md-dialog-container')).toBeNull();
+            expect(testComponent.datepickerInput.value).toEqual(new Date(2020, JAN, 2));
+          });
         });
       }));
 
